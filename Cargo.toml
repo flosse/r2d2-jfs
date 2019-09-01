@@ -1,6 +1,6 @@
 [package]
 name = "r2d2-jfs"
-version = "0.0.1"
+version = "0.1.0"
 license = "Apache-2.0 OR MIT"
 readme = "README.md"
 authors = ["Markus Kohlhase <markus.kohlhase@slowtec.de>"]
