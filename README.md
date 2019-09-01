@@ -16,8 +16,8 @@ use r2d2_jfs::JfsConnectionManager;
 struct Data { x: i32 }
 
 fn main() {
-    let manager = JfsConnectionManager::file("file.json");
-    let pool = r2d2::Pool::builder().max_size(1).build(manager).unwrap();
+    let manager = JfsConnectionManager::file("file.json").unwrap();
+    let pool = r2d2::Pool::builder().max_size(5).build(manager).unwrap();
     let mut threads = vec![];
     for i in 0..10 {
         let pool = pool.clone();
