@@ -13,22 +13,20 @@
 //! #[derive(Serialize, Deserialize)]
 //! struct Data { x: i32 }
 //!
-//! fn main() {
-//!     let manager = JfsConnectionManager::file("file.json").unwrap();
-//!     let pool = r2d2::Pool::builder().max_size(5).build(manager).unwrap();
-//!     let mut threads = vec![];
-//!     for i in 0..10 {
-//!         let pool = pool.clone();
-//!         threads.push(thread::spawn(move || {
-//!             let d = Data { x: i };
-//!             let conn = pool.get().unwrap();
-//!             conn.save(&d).unwrap();
-//!         }));
-//!     }
-//!     for c in threads {
-//!         c.join().unwrap();
-//!     }
-//! }
+//!let manager = JfsConnectionManager::file("file.json").unwrap();
+//!let pool = r2d2::Pool::builder().max_size(5).build(manager).unwrap();
+//!let mut threads = vec![];
+//!for i in 0..10 {
+//!    let pool = pool.clone();
+//!    threads.push(thread::spawn(move || {
+//!        let d = Data { x: i };
+//!        let conn = pool.get().unwrap();
+//!        conn.save(&d).unwrap();
+//!    }));
+//!}
+//!for c in threads {
+//!    c.join().unwrap();
+//!}
 //! ```
 
 use jfs::{self, Store, IN_MEMORY};
@@ -40,14 +38,18 @@ pub struct JfsConnectionManager(Store);
 impl JfsConnectionManager {
     /// Creates a new `JfsConnectionManager` for a single json file.
     pub fn file<P: AsRef<Path>>(path: P) -> io::Result<Self> {
-        let mut cfg = jfs::Config::default();
-        cfg.single = true;
+        let cfg = jfs::Config {
+            single: true,
+            ..Default::default()
+        };
         Self::new_with_cfg(path, cfg)
     }
     /// Creates a new `JfsConnectionManager` for a directory with json files.
     pub fn dir<P: AsRef<Path>>(path: P) -> io::Result<Self> {
-        let mut cfg = jfs::Config::default();
-        cfg.single = false;
+        let cfg = jfs::Config {
+            single: false,
+            ..Default::default()
+        };
         Self::new_with_cfg(path, cfg)
     }
     /// Creates a new `JfsConnectionManager` with a in-memory store.
